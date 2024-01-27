@@ -1,6 +1,16 @@
 # MyBlog
 A simple blog site
 
+首先确保安装python以及MySQL,其次需要的第三方库有：
+
+aiohttp-----(编写异步 HTTP 客户端和服务器)
+
+jinja2-----(在Web开发中用于将数据渲染到HTML页面上，以便动态生成页面内容。常见的Web框架如Flask和Django中都有对jinja2的集成)
+
+aiomysql-----(用于在异步应用程序中操作 MySQL 数据库)
+
+项目目录结构如下：
+
 backup/            ------- 备份目录
 
 conf/              ------- 配置文件
