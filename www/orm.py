@@ -2,7 +2,7 @@ import asyncio, logging
 
 import aiomysql
 
-#通过 logging.info 记录了一条日志，
+#通过 logging.info 记录了一条日志
 #其中包含了执行的 SQL 语句。这有助于在程序运行时追踪和调试数据库查询操作
 def log(sql, args=()):
     logging.info('SQL: %s' % sql)
