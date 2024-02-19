@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+#有了ORM，就可以把Web App需要的3个表用 Model 表示出来
 '''
 Models for user, blog, comment.
 '''
