@@ -1,5 +1,6 @@
 # MyBlog
 A simple blog site
+参考廖雪峰老师python教程实战https://www.liaoxuefeng.com/
 
 首先确保安装python以及MySQL,其次需要的第三方库有：
 
