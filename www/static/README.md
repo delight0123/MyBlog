@@ -5,22 +5,41 @@ CSS（层叠样式表，Cascading Style Sheets）是一种用于描述文档（�
 
 
 static/
+
 +- css/
+
 |  +- addons/
+
 |  |  +- uikit.addons.min.css
+
 |  |  +- uikit.almost-flat.addons.min.css
+
 |  |  +- uikit.gradient.addons.min.css
+
 |  +- awesome.css
+
 |  +- uikit.almost-flat.addons.min.css
+
 |  +- uikit.gradient.addons.min.css
+
 |  +- uikit.min.css
+
 +- fonts/
+
 |  +- fontawesome-webfont.eot
+
 |  +- fontawesome-webfont.ttf
+
 |  +- fontawesome-webfont.woff
+
 |  +- FontAwesome.otf
+
 +- js/
+
    +- awesome.js
+
    +- html5.js
+
    +- jquery.min.js
+   
    +- uikit.min.js
