@@ -20,7 +20,7 @@ async def test():
         await orm.create_pool(loop, **db_params)
 
         # 创建一个用户对象
-        user = User(name='Test1', email='test1@example.com', passwd='0000000', image='about:pink')
+        user = User(name='username', email='username@example.com', passwd='0000000', image='about:pink')
 
         # 保存用户对象到数据库
         await user.save()

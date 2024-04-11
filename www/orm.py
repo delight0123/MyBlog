@@ -33,20 +33,20 @@ SQL语句的占位符是?，而MySQL的占位符是%s，select()函数在内部�
 
 注意到yield from将调用一个子协程（也就是在一个协程中调用另一个协程）并直接获得子协程的返回结果。
 """
-async def select(sql, args, size=None):
+@asyncio.coroutine
+def select(sql, args, size=None):
     log(sql, args)
     global __pool
-    async with __pool.get() as conn:
-        async with conn.cursor(aiomysql.DictCursor) as cur:
-            await cur.execute(sql.replace('?', '%s'), args or ())
-            #如传入size，通过fetchmany()获取最多指定数量的记录，否则，通过fetchall()获取所有记录。
-            if size:
-                rs = await cur.fetchmany(size)
-            else:
-                rs = await cur.fetchall()
+    with (yield from __pool) as conn:
+        cur = yield from conn.cursor(aiomysql.DictCursor)
+        yield from cur.execute(sql.replace('?', '%s'), args or ())
+        if size:
+            rs = yield from cur.fetchmany(size)
+        else:
+            rs = yield from cur.fetchall()
+        yield from cur.close()
         logging.info('rows returned: %s' % len(rs))
         return rs
-
 """
 要执行INSERT、UPDATE、DELETE语句，可以定义一个通用的execute()函数，
 因为这3种SQL的执行都需要相同的参数，以及返回一个整数表示影响的行数
@@ -54,23 +54,19 @@ async def select(sql, args, size=None):
 execute()函数和select()函数所不同的是:
 cursor对象不返回结果集，而是通过rowcount返回结果数。
 """
-async def execute(sql, args, autocommit=True):
+@asyncio.coroutine
+def execute(sql, args):
     log(sql)
-    async with __pool.get() as conn:
-        if not autocommit:
-            await conn.begin()
+    with (yield from __pool) as conn:
         try:
-            async with conn.cursor(aiomysql.DictCursor) as cur:
-                await cur.execute(sql.replace('?', '%s'), args)
-                affected = cur.rowcount
-            if not autocommit:
-                await conn.commit()
+            cur = yield from conn.cursor()
+            yield from cur.execute(sql.replace('?', '%s'), args)
+            affected = cur.rowcount
+            yield from cur.close()
         except BaseException as e:
-            if not autocommit:
-                await conn.rollback()
             raise
         return affected
-
+    
 def create_args_string(num):
     L = []
     for n in range(num):

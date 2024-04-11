@@ -11,6 +11,9 @@ from aiohttp import web
 from apis import APIError
 
 #要把一个函数映射为一个URL处理函数，先定义@get()，一个函数通过@get()的装饰就附带了URL信息。
+"""
+可以使路由和处理逻辑分离开来。这样，你可以专注于编写处理特定URL请求的逻辑，而不用在每个处理函数中管理路由信息。
+"""
 def get(path):
     '''
     Define decorator @get('/path')
@@ -77,6 +80,12 @@ def has_request_arg(fn):
             raise ValueError('request parameter must be the last named parameter in function: %s%s' % (fn.__name__, str(sig)))
     return found
 
+'''
+RequestHandler目的就是从URL函数中分析其需要接收的参数，
+从request中获取必要的参数，调用URL函数，然后把结果转换为web.Response对象.
+
+这样，就完全符合aiohttp框架的要求
+'''
 class RequestHandler(object):
 
     def __init__(self, app, fn):
@@ -145,6 +154,7 @@ def add_static(app):
     app.router.add_static('/static/', path)
     logging.info('add static %s => %s' % ('/static/', path))
 
+#用来注册一个URL处理函数：
 def add_route(app, fn):
     method = getattr(fn, '__method__', None)
     path = getattr(fn, '__route__', None)
@@ -155,6 +165,7 @@ def add_route(app, fn):
     logging.info('add route %s %s => %s(%s)' % (method, path, fn.__name__, ', '.join(inspect.signature(fn).parameters.keys())))
     app.router.add_route(method, path, RequestHandler(app, fn))
 
+#把很多次add_route()注册的调用，变成自动扫描
 def add_routes(app, module_name):
     n = module_name.rfind('.')
     if n == (-1):
