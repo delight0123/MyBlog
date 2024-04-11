@@ -115,17 +115,24 @@ def datetime_filter(t):
 添加了日志和响应处理的中间件，初始化Jinja2模板引擎，设置路由和静态资源。
 最后，通过loop.create_server创建服务器并启动
 """
+
 async def init(loop):
     await orm.create_pool(loop=loop, host='localhost', port=3306, user='root', password='1234', db='awesome')
-    app = web.Application(loop=loop, middlewares=[
+    app = web.Application(loop=loop,middlewares=[
         logger_factory, response_factory
     ])
     init_jinja2(app, filters=dict(datetime=datetime_filter))
     add_routes(app, 'urlHandlers')
     add_static(app)
-    srv = await loop.create_server(app.make_handler(), '127.0.1.1', 9000)
-    logging.info('server started at http://127.0.1.1:9000...')
-    return srv
+
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, '127.0.0.1', 9000)
+    logging.info('server started at http://127.0.0.1:9000...')
+    await site.start()
+    # srv = await loop.create_server(app.make_handler(), '127.0.0.1', 9000)
+    # logging.info('server started at http://127.0.0.1:9000...')
+    # return srv
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(init(loop))
